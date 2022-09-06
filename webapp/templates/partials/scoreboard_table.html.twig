@@ -18,6 +18,7 @@
 {% set hasDifferentCategoryColors = scoreboard.categoryColors(limitToTeamIds) %}
 {% set scores = scoreboard.scores | filter(score => limitToTeams is null or score.team.teamid in limitToTeamIds) %}
 {% set problems = scoreboard.problems %}
+{% set shuffle = contest.shuffle and not jury and not team %}
 
 {% if maxWidth > 0 %}
     <style>
@@ -105,7 +106,7 @@
     {% for score in scores %}
         {% set classes = [] %}
         {% if score.team.category.sortorder != previousSortOrder %}
-            {% if previousSortOrder != -1 %}
+            {% if previousSortOrder != -1 and not shuffle %}
                 {# Output summary of previous sort order #}
                 {% include 'partials/scoreboard_summary.html.twig' with {sortOrder: previousSortOrder} %}
             {% endif %}
@@ -226,7 +227,12 @@
             <td class="scorett">{{ totalTime }}</td>
 
             {% if showTeamSubmissions or jury %}
-                {% for problem in problems %}
+                {% if shuffle and not (myTeamId is defined and myTeamId == score.team.teamid) %}
+                    {% set row_problems = problems | shuffle %}
+                {% else %}
+                    {% set row_problems = problems %}
+                {% endif %}
+                {% for problem in row_problems %}
                     {# CSS class for correct/incorrect/neutral results #}
                     {% set scoreCssClass = 'score_neutral' %}
                     {% set matrixItem = scoreboard.matrix[score.team.teamid][problem.probid] %}
@@ -288,7 +294,9 @@
     {% endfor %}
 
     {# Output summary of last sort order #}
+    {% if not shuffle %}
     {% include 'partials/scoreboard_summary.html.twig' with {sortOrder: previousSortOrder} %}
+    {% endif %}
     </tbody>
 </table>
 

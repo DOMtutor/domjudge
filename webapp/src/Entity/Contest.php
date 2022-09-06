@@ -279,6 +279,15 @@ class Contest extends BaseApiEntity
     private $openToAllTeams = true;
 
     /**
+     * @var boolean
+     * @ORM\Column(type="boolean", name="shuffle",
+     *     options={"comment"="Whether this scoreboard should be shuffled","default"=0},
+     *     nullable=false)
+     * @Serializer\Exclude()
+     */
+    private $shuffle = false;
+
+    /**
      * @ORM\ManyToMany(targetEntity="Team", inversedBy="contests")
      * @ORM\JoinTable(name="contestteam",
      *                joinColumns={@ORM\JoinColumn(name="cid", referencedColumnName="cid", onDelete="CASCADE")},
@@ -945,6 +954,30 @@ class Contest extends BaseApiEntity
     public function isOpenToAllTeams()
     {
         return $this->openToAllTeams;
+    }
+
+    /**
+     * Set shuffle
+     *
+     * @param boolean $shuffle
+     *
+     * @return Contest
+     */
+    public function setShuffle($shuffle)
+    {
+        $this->shuffle = $shuffle;
+
+        return $this;
+    }
+
+    /**
+     * Get shuffle
+     *
+     * @return boolean
+     */
+    public function isShuffle()
+    {
+        return $this->shuffle;
     }
 
     /**
