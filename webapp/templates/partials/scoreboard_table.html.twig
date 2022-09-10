@@ -18,7 +18,7 @@
 {% set hasDifferentCategoryColors = scoreboard.categoryColors(limitToTeamIds) %}
 {% set scores = scoreboard.scores | filter(score => limitToTeams is null or score.team.teamid in limitToTeamIds) %}
 {% set problems = scoreboard.problems %}
-{% set shuffle = contest.shuffle and not jury and not team %}
+{% set shuffle = contest.shuffle and not jury and not team_summary and not contest.finalizetime %}
 
 {% if maxWidth > 0 %}
     <style>
